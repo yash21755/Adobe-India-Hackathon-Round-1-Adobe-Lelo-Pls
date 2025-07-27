@@ -1,0 +1,15 @@
+# file: Dockerfile
+
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+RUN pip install --no-cache-dir pymupdf
+
+# Copy all scripts
+COPY . .
+
+# Run the batch processor
+ENTRYPOINT ["python", "process_pdfs.py"]
