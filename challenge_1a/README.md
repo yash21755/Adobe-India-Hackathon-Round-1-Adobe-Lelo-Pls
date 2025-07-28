@@ -74,10 +74,7 @@ docker build -t outline-extractor .
 Use the following command to run the container and generate outlines for all PDF files in the `input/` folder:
 
 ```bash
-docker run --rm \
-  -v "$PWD/input":/app/input \
-  -v "$PWD/output":/app/output \
-  outline-extractor
+docker run --rm -v "%cd%\input:/app/input" -v "%cd%\output:/app/output" outline-extractor
 ```
 
 ### Output
