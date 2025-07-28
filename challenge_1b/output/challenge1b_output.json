@@ -1,0 +1,152 @@
+{
+    "metadata": {
+        "input_documents": [
+            "South of France - Cities.pdf",
+            "South of France - Cuisine.pdf",
+            "South of France - History.pdf",
+            "South of France - Restaurants and Hotels.pdf",
+            "South of France - Things to Do.pdf",
+            "South of France - Tips and Tricks.pdf",
+            "South of France - Traditions and Culture.pdf"
+        ],
+        "persona": "Travel Planner",
+        "job_to_be_done": "Plan a trip of 4 days for a group of 10 college friends.",
+        "processing_timestamp": "2025-07-28T06:54:25.707520"
+    },
+    "extracted_sections": [
+        {
+            "document": "South of France - Tips and Tricks.pdf",
+            "section_title": "Beach Trips",
+            "importance_rank": 1,
+            "page_number": 7
+        },
+        {
+            "document": "South of France - Cities.pdf",
+            "section_title": "Travel Tips",
+            "importance_rank": 2,
+            "page_number": 2
+        },
+        {
+            "document": "South of France - Tips and Tricks.pdf",
+            "section_title": "Introduction",
+            "importance_rank": 3,
+            "page_number": 1
+        },
+        {
+            "document": "South of France - Things to Do.pdf",
+            "section_title": "Introduction",
+            "importance_rank": 4,
+            "page_number": 1
+        },
+        {
+            "document": "South of France - Things to Do.pdf",
+            "section_title": "Educational Experiences",
+            "importance_rank": 5,
+            "page_number": 9
+        },
+        {
+            "document": "South of France - Restaurants and Hotels.pdf",
+            "section_title": "Budget -Friendly Hotels",
+            "importance_rank": 6,
+            "page_number": 8
+        },
+        {
+            "document": "South of France - Cities.pdf",
+            "section_title": "Local Experiences",
+            "importance_rank": 7,
+            "page_number": 3
+        },
+        {
+            "document": "South of France - Restaurants and Hotels.pdf",
+            "section_title": "Introduction",
+            "importance_rank": 8,
+            "page_number": 1
+        },
+        {
+            "document": "South of France - Cuisine.pdf",
+            "section_title": "Conclusion",
+            "importance_rank": 9,
+            "page_number": 8
+        },
+        {
+            "document": "South of France - History.pdf",
+            "section_title": "Conclusion",
+            "importance_rank": 10,
+            "page_number": 12
+        },
+        {
+            "document": "South of France - History.pdf",
+            "section_title": "Key Historical Sites in Montpellier",
+            "importance_rank": 11,
+            "page_number": 10
+        },
+        {
+            "document": "South of France - Cuisine.pdf",
+            "section_title": "Introduction",
+            "importance_rank": 12,
+            "page_number": 1
+        }
+    ],
+    "subsection_analysis": [
+        {
+            "document": "South of France - Tips and Tricks.pdf",
+            "refined_text": "Beach Trips\n\n• Beach Bag:  A large, waterproof bag for essentials.  \n• Towels:  Lightweight, quick -drying beach towels.  \n• Beach Toys:  Buckets, shovels, and t oys for kids.  \n• Snorkeling Gear:  Bring your own gear for a better fit and comfort. \n• Additional Tips:  Pack a beach umbrella or tent for shade and a cooler for drinks and \nsnacks. Consider bringing a waterproof phone case to protect your device.",
+            "page_number": 7
+        },
+        {
+            "document": "South of France - Cities.pdf",
+            "refined_text": "Travel Tips\n\n• Best Time to Visit: The best time to visit the South of France is during the spring (April to June) and fall (September to October) when the weather is pleasant, and the tourist \ncrowds are smaller.  \n• Transportation : The region is well -connected by an extensive network of trains, \nbuses, and flights. Renting a car is also a great option for exploring the countryside \nand smaller towns.  \n• Language : While French is the oﬃcial language, English is widely spoken in tourist \nareas. Learning a few basic French phrases can enhance your travel experience.",
+            "page_number": 2
+        },
+        {
+            "document": "South of France - Tips and Tricks.pdf",
+            "refined_text": "Introduction\n\nPlanning a trip to the South of France requires thoughtful preparation to ensure a comfortable and enjoyable experience. This guide covers everything from packing essentials to travel tips, catering to all seasons and various activities. Whether you're traveling solo, with kids, or in a group, this guide will help you make the most of your trip.",
+            "page_number": 1
+        },
+        {
+            "document": "South of France - Things to Do.pdf",
+            "refined_text": "Introduction\n\nThe South of France, with its stunning coastline, picturesque villages, and vibrant cities, oﬀers \na wealth of activities and experiences for travelers. Whether you're seeking adventure, relaxation, or cultural enrichment, this region has something for everyone. This guide will take you through a variety of activities and must -see attractions to help you plan an \nunforgettable trip.",
+            "page_number": 1
+        },
+        {
+            "document": "South of France - Things to Do.pdf",
+            "refined_text": "Educational Experiences\n\n• Toulouse: Visit Cité de l'Espace for a space -themed science museum with interactive \nexhibits, a planetarium, and a replica of the Mir space station. \n• Monaco: Explore the Musée Océanographique and its marine exhibits, including a \nshark lagoon and touch tanks.  \n• Dordogne: See ancient cave paintings at prehistoric sites like Lascaux and Rouﬃgnac, and visit museums dedicated to prehistoric life. \n• Montpellier: Discover the Planet Ocea n World, an aquarium and planetarium with \ninteractive exhibits.  \n• Carcassonne: Take a guided tour of the medieval citadel and learn about its history and architecture. \n• Nîmes: Visit the Roman amphitheater and learn about ancient Roman history.  \n• Arles: Explore the Roman ruins and the Musée de l'Arles Antique, which showcases artifacts from the city's past.",
+            "page_number": 9
+        },
+        {
+            "document": "South of France - Restaurants and Hotels.pdf",
+            "refined_text": "Budget -Friendly Hotels\n\n• Ibis Budget Nice Californie Lenval (Nice): A budget -friendly hotel oﬀering comfortable \nrooms and easy access to the beach and city cent er. The modern amenities and \nconvenient location make it a great choice for budget -conscious travelers.  \n• Hotel Le Saint Paul (Nice): A charming hotel located in a historic building, oﬀering \naﬀordable rates and beautiful views of the Mediterranean. The coz y rooms and \nfriendly service make it a pleasant stay.  \n• Hotel des Arts (Montpellier): A budget -friendly hotel located in the heart of \nMontpellier, oﬀering comfortable rooms and easy access to the city's attractions. The artistic decor and central location m ake it a popular choice.  \n• Hotel Le Mistral (Marseille): A budget -friendly hotel oﬀering simple, clean rooms and \na convenient location near the Old Port. The friendly staﬀ and aﬀordable rates make it a good option for travelers on a budget.  \n• Hotel Azur (Ni ce): A budget -friendly hotel oﬀering comfortable rooms and easy \naccess to the beach and city center. The modern amenities and convenient location make it a great choice for budget -conscious travelers.  \n• Hotel de la Paix (Marseille): A budget -friendly hotel oﬀering simple, clean rooms and \na convenient location near the Old Port. The friendly staﬀ and aﬀordable rates make it a good option for travelers on a budget.  \n• Hotel du Palais (Montpellier): A budget -friendly hotel located in the heart of \nMontpellier, o ﬀering comfortable rooms and easy access to the city's attractions. The \nartistic decor and central location make it a popular choice.  \n• Hotel de la Mer (Nice): A budget -friendly hotel oﬀering comfortable rooms and easy \naccess to the beach and city center. The modern amenities and convenient location \nmake it a great choice for budget -conscious travelers.  \n• Hotel de la Plage (Marseille): A budget -friendly hotel oﬀering simple, clean rooms and \na convenient location near the Old Port. The friendly staﬀ and aﬀo rdable rates make it \na good option for travelers on a budget.  \n• Hotel de la Gare (Montpellier): A budget -friendly hotel located in the heart of \nMontpellier, oﬀering comfortable rooms and easy access to the city's attractions. The artistic decor and central location make it a popular choice.",
+            "page_number": 8
+        },
+        {
+            "document": "South of France - Cities.pdf",
+            "refined_text": "Local Experiences\n\n• Boat Trip to the Calanques : Take a boat t rip to the Calanques, a series of stunning \nlimestone cliﬀs and coves along the coast.  \n• Fish Market at the Old Port : Visit the fish market at the Old Port to experience the \nlocal seafood culture. \n• Street Art in Cours Julien : Explore the vibrant street art sc ene in the Cours Julien \ndistrict.",
+            "page_number": 3
+        },
+        {
+            "document": "South of France - Restaurants and Hotels.pdf",
+            "refined_text": "Introduction\n\nThe South of France, known for its stunning landscapes, rich cultural heritage, and exquisite \ncuisine, is a dream destination for travelers. From the glamorous beaches of the French Riviera to the charming villages of Provence, this region oﬀers a diverse array of experiences. Whether you're looking for budget -friendly options, family -friendly spots, upscale dining, or \nluxurious experiences, this guide will help you find t he perfect restaurants and hotels for your \ntrip.",
+            "page_number": 1
+        },
+        {
+            "document": "South of France - Cuisine.pdf",
+            "refined_text": "Conclusion\n\nThe South of France oﬀers a rich and diverse culinary landscape that is sure to delight any \nfood lo ver. From fresh seafood and Provençal dishes to iconic restaurants and unique culinary \nexperiences, there is something for everyone to enjoy. Whether you're savoring a bowl of bouillabaisse by the sea, exploring vibrant food markets, or indulging in a Mich elin-starred \nmeal, the flavors of this beautiful region will leave a lasting impression. Use this guide to plan \nyour culinary journey and savor the tastes of the South of France, creating memories that will \nlinger long after your trip has ended. Bon appéti t!",
+            "page_number": 8
+        },
+        {
+            "document": "South of France - History.pdf",
+            "refined_text": "Conclusion\n\nThe South of France oﬀers a rich tapestry of history, culture, and architecture that is sure to \ncaptivate any traveler. From the ancient Roman ruins of Nîmes and Arles to the medieval fortresses of Carcassonne and Avignon, each city and town has its own u nique story to tell. \nWhether you're exploring the vibrant streets of Marseille, the elegant boulevards of Aix -en-\nProvence, or the charming squares of Montpellier, you'll find a wealth of historical treasures \nwaiting to be discovered. Use this guide to plan  your journey through the South of France and \nimmerse yourself in the fascinating history of this beautiful region.",
+            "page_number": 12
+        },
+        {
+            "document": "South of France - History.pdf",
+            "refined_text": "Key Historical Sites in Montpellier\n\n• Place de la Comédie: The central square of Montpellier, this bustling area is \nsurrounded by cafes, shops, and the impressive Opéra Comédie. It is a great place to start exploring the city.  \n• Saint -Pierre Cathedral: This Gothic cathedral, built in the 14th century, is known for its \nimposing facade and twin towers. It is the seat of the Archdiocese of Montpellier.  \n• Promenade du Peyrou: This 17th -century promenade oﬀers stunning views of the city \nand features the Arc de Triomphe and the Château d'Eau, a beautiful water tower.  \n• Musée Fabre: One of the most important art museums in France, the Musée Fabre houses an extensive collection of European paintings, sculptures, and decorativ e arts.  \n• University of Montpellier: Founded in 1289, it is one of the oldest universities in the world and has been a center of learning and culture for centuries.  \n• Jardin des Plantes: Established in 1593, it is the oldest botanical garden in France and was created for the study of medicinal plants.",
+            "page_number": 10
+        },
+        {
+            "document": "South of France - Cuisine.pdf",
+            "refined_text": "Introduction\n\nThe South of France, known for its stunning landscapes and charming villages, is also a \nparadise for food lovers. The region's cuisine is a delightful blend of Mediterranean flavors, fresh ingredients, and traditional recipes passed down through generations. This guide will \ntake you through the diﬀerent types of food, famous dishes, must -visit restaurants, renowned \nwine regions, and the types of wines they produce to help you plan an unforg ettable culinary \nadventure.",
+            "page_number": 1
+        }
+    ]
+}

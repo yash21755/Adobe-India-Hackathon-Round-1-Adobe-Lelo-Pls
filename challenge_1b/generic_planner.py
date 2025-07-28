@@ -2,179 +2,204 @@ import json
 import re
 import datetime
 import PyPDF2
-import io
+import os
+from collections import Counter
+from string import punctuation
 
-# A simple list of common English stop words.
-STOP_WORDS = {
-    'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from', 'has', 'he',
-    'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the', 'to', 'was', 'were',
-    'will', 'with', 'i', 'you', 'my', 'your', 'me'
-}
-
-def generate_keywords(persona, job_to_be_done):
-    """
-    Dynamically generates keywords from the persona and job description.
-    """
-    text = (persona + ' ' + job_to_be_done).lower()
-    # Remove punctuation and split into words
-    words = re.findall(r'\b\w+\b', text)
-    # Filter out stop words and short words
-    keywords = {
-        word: 10 for word in words
-        if word not in STOP_WORDS and len(word) > 3
+# Load stopwords with a fallback
+try:
+    import nltk
+    nltk.download('stopwords', quiet=True)
+    from nltk.corpus import stopwords
+    STOP_WORDS = set(stopwords.words('english'))
+except ImportError:
+    print("[Warning] NLTK not found. Using a basic list of stopwords.")
+    STOP_WORDS = {
+        'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from', 'has', 'he',
+        'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the', 'to', 'was', 'were',
+        'will', 'with', 'i', 'you', 'my', 'your', 'me', 'this', 'guide', 'document'
     }
+
+def clean_text(text):
+    """Removes punctuation and converts to lowercase for scoring."""
+    return re.sub(rf"[{re.escape(punctuation)}]", "", text.lower())
+
+def generate_keywords(persona, task):
+    """Dynamically generates keywords from the persona and task."""
+    print("[+] Generating keywords...")
+    combined = f"{persona} {task}".lower()
+    words = re.findall(r'\b\w{4,}\b', combined) # Find words with 4+ letters
+    keywords = {word: 10 for word in words if word not in STOP_WORDS}
+    print(f"[+] Keywords: {list(keywords.keys())}")
     return keywords
 
 def extract_text_from_pdf(file_path):
-    """
-    Extracts text content from a given PDF file.
-    """
+    """Extracts text and page number from each page of a PDF."""
     try:
         with open(file_path, 'rb') as f:
             reader = PyPDF2.PdfReader(f)
-            text = ""
-            for page in reader.pages:
-                text += page.extract_text() or ""
-        return text
+            return [(i + 1, page.extract_text() or "") for i, page in enumerate(reader.pages)]
     except Exception as e:
-        print(f"Error reading {file_path}: {e}")
-        return ""
+        print(f"[!] Error reading {file_path}: {e}")
+        return []
 
-def extract_sections(document_content):
-    """
-    Extracts sections using a heuristic to find titles.
-    """
-    sections = {}
-    # Use a placeholder for content before the first proper title
+def extract_sections(pages):
+    """Extracts sections using a more robust title-finding heuristic."""
+    print("[+] Detecting sections...")
+    sections = []
+    # A title is likely short, capitalized, and not a full sentence.
+    title_pattern = re.compile(r"^[A-Z][A-Za-z0-9\s,&-]{3,80}$")
+
     current_title = "Introduction"
     current_content = ""
-    page_number = 1 # Simplified page tracking for generic text
+    current_page = 1
 
-    lines = document_content.split('\n')
-    for i, line in enumerate(lines):
-        line_stripped = line.strip()
-        # Heuristic for a title: A short line (less than 10 words),
-        # often in title case, and not ending with a period.
-        if 0 < len(line_stripped) < 70 and line_stripped.istitle() and not line_stripped.endswith('.'):
-             if current_content.strip():
-                sections[current_title] = {'content': current_content.strip(), 'page': page_number}
-             current_title = line_stripped
-             current_content = ""
-        else:
-            current_content += line + '\n'
+    for page_num, text in pages:
+        lines = text.split('\n')
+        for line in lines:
+            stripped_line = line.strip()
+            # Check if the line is a likely title
+            if title_pattern.match(stripped_line) and not stripped_line.endswith('.') and len(stripped_line.split()) < 12:
+                if current_content.strip():
+                    sections.append({'title': current_title, 'content': current_content.strip(), 'page': current_page})
+                current_title = stripped_line
+                current_content = ""
+                current_page = page_num
+            else:
+                current_content += line + "\n"
 
-    # Add the last section
-    if current_title not in sections and current_content.strip():
-        sections[current_title] = {'content': current_content.strip(), 'page': page_number}
+    if current_content.strip():
+        sections.append({'title': current_title, 'content': current_content.strip(), 'page': current_page})
+
+    print(f"[+] Sections found: {len(sections)}")
     return sections
 
+def score_section(section, keywords):
+    """Scores a section based on keyword density and title match."""
+    content = clean_text(section['content'])
+    title = clean_text(section['title'])
+    words_in_content = content.split()
+    
+    if not words_in_content:
+        return 0
 
-def get_relevance_score(title, content, keywords):
-    """
-    Calculates a relevance score for a section based on keywords.
-    """
-    score = 0
-    title_text = title.lower()
-    content_text = content.lower()
-    for keyword, weight in keywords.items():
-        # Higher score for keywords in the title
-        if re.search(r'\b' + re.escape(keyword) + r'\b', title_text):
-            score += weight * 5
-        # Score based on frequency in content
-        score += weight * len(re.findall(r'\b' + re.escape(keyword) + r'\b', content_text))
+    # Score based on keyword counts, with title keywords being more valuable
+    score = sum(content.count(k) * w + title.count(k) * w * 5 for k, w in keywords.items())
+    score /= len(words_in_content) # Normalize by content length to get density
+
+    if title.strip().lower() in {"introduction", "conclusion", "references", "appendix"}:
+        score *= 0.5 # Penalize generic sections
     return score
 
-def get_refined_subsection(content, keywords):
-    """
-    Performs extractive summarization to find the most relevant sentences.
-    """
-    sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', content)
-    scored_sentences = []
-    for sentence in sentences:
-        if not sentence.strip():
+def find_best_subsection(section_title, content, keywords):
+    """Finds the most relevant paragraph and prepends the section title for context."""
+    subsections = re.split(r'\n\s*\n', content) # Split by blank lines
+    best_sub = ""
+    best_score = -1
+
+    for sub in subsections:
+        sub_cleaned = sub.strip()
+        if not sub_cleaned or len(sub_cleaned) < 50: # Ignore short fragments
             continue
-        score = 0
-        for keyword in keywords:
-            if re.search(r'\b' + re.escape(keyword) + r'\b', sentence.lower()):
-                score += 1
-        if score > 0:
-            scored_sentences.append({'sentence': sentence.strip(), 'score': score})
 
-    # Sort sentences by score and return the top 2 as the "refined text"
-    scored_sentences.sort(key=lambda x: x['score'], reverse=True)
-    refined_text = " ".join([s['sentence'] for s in scored_sentences[:2]])
-    return refined_text if refined_text else content.strip()[:300] # Fallback
+        words = re.findall(r'\b\w+\b', clean_text(sub_cleaned))
+        if not words:
+            continue
 
+        # Score based on keyword density
+        word_counts = Counter(words)
+        score = sum(word_counts.get(k, 0) * w for k, w in keywords.items())
+        score /= len(words)
 
-def process_documents(input_file_path):
-    """
-    Main processing function.
-    """
-    with open(input_file_path, 'r') as f:
-        input_data = json.load(f)
+        # Boost score for lists, as they are often summaries
+        if '•' in sub_cleaned or '*' in sub_cleaned or re.match(r'^\d+\.', sub_cleaned):
+            score *= 1.5
 
-    persona = input_data['persona']['role']
-    job_to_be_done = input_data['job_to_be_done']['task']
-    keywords = generate_keywords(persona, job_to_be_done)
+        if score > best_score:
+            best_score = score
+            best_sub = sub_cleaned
 
-    all_sections = []
-    for doc in input_data['documents']:
+    # If no suitable subsection is found, use the beginning of the content
+    if not best_sub:
+        best_sub = content.strip()[:500]
+        
+    # Return the content with the section title for context
+    return f"{section_title}\n\n{best_sub}"
+
+def process_documents(input_filename):
+    """Main processing function."""
+    with open(os.path.join("input", input_filename), 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    persona = data['persona']['role']
+    job = data['job_to_be_done']['task']
+    keywords = generate_keywords(persona, job)
+
+    top_sections_from_all_docs = []
+
+    for doc in data['documents']:
         filename = doc['filename']
-        full_text = extract_text_from_pdf(filename)
-        if not full_text:
+        print(f"\n[+] Processing: {filename}")
+        pages = extract_text_from_pdf(os.path.join("input", filename))
+        if not pages:
             continue
 
-        sections = extract_sections(full_text)
-        for title, data in sections.items():
-            score = get_relevance_score(title, data['content'], keywords)
-            if score > 10:  # Relevance threshold
-                all_sections.append({
-                    "document": filename,
-                    "section_title": title,
-                    "importance_rank": score,
-                    "page_number": data['page'],
-                    "content": data['content']
-                })
+        sections = extract_sections(pages)
+        
+        scored_sections_for_this_doc = []
+        for sec in sections:
+            score = score_section(sec, keywords)
+            if score > 0.05: # Lower threshold to ensure we capture relevant sections
+                sec.update({'score': score, 'document': filename})
+                scored_sections_for_this_doc.append(sec)
+        
+        # Sort sections for this document and get the top 2
+        sorted_sections = sorted(scored_sections_for_this_doc, key=lambda x: x['score'], reverse=True)
+        top_sections_from_all_docs.extend(sorted_sections[:2])
+        print(f"[+] Selected top {len(sorted_sections[:2])} sections from {filename}")
 
-    # Sort sections by importance (higher score is better)
-    sorted_sections = sorted(all_sections, key=lambda x: x['importance_rank'], reverse=True)
+    # Globally rank all the selected top sections
+    globally_ranked_sections = sorted(top_sections_from_all_docs, key=lambda x: x['score'], reverse=True)
 
-    # Prepare the output JSON
-    output = {
+    results = {
         "metadata": {
-            "input_documents": [doc['filename'] for doc in input_data['documents']],
+            "input_documents": [doc['filename'] for doc in data['documents']],
             "persona": persona,
-            "job_to_be_done": job_to_be_done,
+            "job_to_be_done": job,
             "processing_timestamp": datetime.datetime.now().isoformat()
         },
         "extracted_sections": [],
         "subsection_analysis": []
     }
 
-    # Populate extracted_sections (Top 5)
-    for i, section in enumerate(sorted_sections[:5]):
-        output["extracted_sections"].append({
-            "document": section['document'],
-            "section_title": section['section_title'],
+    # Populate the final output with the globally ranked sections
+    for i, sec in enumerate(globally_ranked_sections):
+        results["extracted_sections"].append({
+            "document": sec['document'],
+            "section_title": sec['title'],
             "importance_rank": i + 1,
-            "page_number": section['page_number']
+            "page_number": sec['page']
         })
 
-    # Populate subsection_analysis with extractive summaries (Top 5)
-    for section in sorted_sections[:5]:
-        refined_text = get_refined_subsection(section['content'], keywords)
-        output["subsection_analysis"].append({
-            "document": section['document'],
-            "refined_text": refined_text,
-            "page_number": section['page_number']
+        # Generate the contextual refined_text
+        contextual_subsection = find_best_subsection(sec['title'], sec['content'], keywords)
+        results["subsection_analysis"].append({
+            "document": sec['document'],
+            "refined_text": re.sub(r'\\', '', contextual_subsection), # Clean stray backslashes
+            "page_number": sec['page']
         })
 
-    return output
+    return results
 
-if __name__ == '__main__':
-    input_json_path = 'challenge1b_input.json'
-    output_json_path = 'challenge1b_output.json'
-    result = process_documents(input_json_path)
-    with open(output_json_path, 'w') as f:
-        json.dump(result, f, indent=4)
-    print(f"Processing complete. Output written to {output_json_path}")
+if __name__ == "__main__":
+    input_file = 'challenge1b_input.json'
+    output_file = os.path.join("output", "challenge1b_output.json")
+
+    print("[INFO] Starting processing...")
+    result = process_documents(input_file)
+
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(result, f, indent=4, ensure_ascii=False)
+
+    print(f"\n[DONE] Output saved to {output_file}")

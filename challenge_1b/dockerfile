@@ -4,17 +4,20 @@ FROM python:3.9-slim
 # Set the working directory in the container
 WORKDIR /app
 
+# Create input and output directories inside the container
+RUN mkdir input
+RUN mkdir output
+
 # Copy the requirements file and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the Python script and the input JSON configuration file
+# Copy the Python script into the container's working directory
 COPY generic_planner.py .
-COPY challenge1b_input.json .
 
-# Copy all PDF documents from the build context into the container
-# NOTE: Place your PDFs in the same directory as the Dockerfile before building.
-COPY *.pdf ./
+# Copy files from the host's "input" folder into the container's "input" folder
+COPY input/challenge1b_input.json ./input/
+COPY input/*.pdf ./input/
 
 # Command to run the application
 CMD ["python", "generic_planner.py"]
