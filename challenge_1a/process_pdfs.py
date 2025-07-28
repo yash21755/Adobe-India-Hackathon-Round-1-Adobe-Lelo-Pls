@@ -1,4 +1,4 @@
-import pymupdf
+import pymupdf #type: ignore
 import os
 import json
 import re
